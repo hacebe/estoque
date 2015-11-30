@@ -22,8 +22,14 @@ class Login{
 				"success" => 1,
 				"data" => $result
 			));
+		}else{
+			echo json_encode(array(
+				"success" => 0,
+				"error" => "Usuario e/ou senha incorretos(as)"
+			));
 		}
 	}
  }
 
-$login = new Login('hacebe', '102030');
+//$login = new Login($_POST['user'], $_POST['passwd']);
+$login = new Login("hacebe", "102030");
