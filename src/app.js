@@ -1,4 +1,4 @@
-function Estoque ( lista, valorCaixa ) {
+/*function Estoque ( lista, valorCaixa ) {
 
 	this.caixa = valorCaixa || 0;
 	this.produtos = {};
@@ -31,4 +31,34 @@ var produtos = [
 	{pid: 14, nome: "Estabilizador Hexus Power", quantidade: 6, valorUnitario: 210}
 ];
 
-var estoque = new Estoque(produtos);
+var estoque = new Estoque(produtos);*/
+
+(function () {
+
+	var sub = $("#submit");
+	var user = $("#username").val();
+	var passwd = $("#passwd").val();
+
+	sub.on('click', function (e) {
+		$.ajax({
+			url: "src/data/Login.php",
+			method: 'GET',
+			data: {user: user, passwd: passwd},
+			success: function (response){	
+				response = JSON.parse(response);
+		
+				if(response.success){
+				
+					 console.log("LOGADO")
+		
+				} else if(response.error) {
+					console.warn('Mysql or Ajax Error ! ' + response.error);
+				}
+			}
+		})
+		.fail(function() {
+			console.error('Conection lost...');
+		});
+	});
+
+})();

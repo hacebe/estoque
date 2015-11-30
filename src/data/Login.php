@@ -26,4 +26,4 @@ class Login{
 	}
  }
 
-$login = new Login('hacebe', '102030');
+$login = new Login($_GET['user'], $_GET['passwd']);
