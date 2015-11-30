@@ -22,6 +22,11 @@ class Login{
 				"success" => 1,
 				"data" => $result
 			));
+		}else{
+			echo json_encode(array(
+				"success" => 0,
+				"error" => "Usuario e/ou senha incorretos(as)"
+			));
 		}
 	}
  }
