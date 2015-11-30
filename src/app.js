@@ -33,32 +33,30 @@ var produtos = [
 
 var estoque = new Estoque(produtos);*/
 
-(function () {
+var sub = $("#submit");
 
-	var sub = $("#submit");
-	var user = $("#username").val();
+sub.on('click', function (e) {
+
+	var user = $("#user").val();
 	var passwd = $("#passwd").val();
 
-	sub.on('click', function (e) {
-		$.ajax({
-			url: "src/data/Login.php",
-			method: 'GET',
-			data: {user: user, passwd: passwd},
-			success: function (response){	
-				response = JSON.parse(response);
-		
-				if(response.success){
-				
-					 console.log("LOGADO")
-		
-				} else if(response.error) {
-					console.warn('Mysql or Ajax Error ! ' + response.error);
-				}
+	$.ajax({
+		url: "src/data/Login.php",
+		method: 'GET',
+		data: {user: user, passwd: passwd},
+		success: function (response){	
+			response = JSON.parse(response);
+	
+			if(response.success){
+			
+				 console.log("LOGADO")
+	
+			} else if(response.error) {
+				console.warn('Mysql or Ajax Error ! ' + response.error);
 			}
-		})
-		.fail(function() {
-			console.error('Conection lost...');
-		});
+		}
+	})
+	.fail(function() {
+		console.error('Conection lost...');
 	});
-
-})();
+});
