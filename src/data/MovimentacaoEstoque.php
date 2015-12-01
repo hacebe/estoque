@@ -3,8 +3,8 @@ require_once "autoload.php";
 
 use Connection as conexao;	
 
-class Categoria{
-	private $cid;
+class MovimentacaoEstoque{
+	private $mid;
 	private $nome;
 	private $db;
 	
@@ -101,3 +101,5 @@ $cat->getCategorias();
 //$cat->addCategoria("Categoria 7");
 //$cat->deleteCategoria(3);
 //$cat->updateCategoria(2, "Categoria 2");
+$login = new Login();
+echo $login->check_session();

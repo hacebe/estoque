@@ -86,14 +86,13 @@ class Produto{
 		);
 	}
 
-	public function updateProduto($id, $nome, $cat, $estoqueMinimo, $estoqueAtual){
-		$p_sql = conexao::getInstance()->prepare('UPDATE est_produtos SET `nome`=:nome, `categoria`=:cat, `estoque_minimo`=:estoqueMinimo, `estoque_atual`=:estoqueAtual WHERE pid=:pid');
+	public function updateProduto($id, $nome, $cat, $estoqueMinimo){
+		$p_sql = conexao::getInstance()->prepare('UPDATE est_produtos SET `nome`=:nome, `categoria`=:cat, `estoque_minimo`=:estoqueMinimo WHERE pid=:pid');
 		$p_sql->execute(
 			array(
 				":nome" => $nome,
 				":cat" => $cat,
 				":estoqueMinimo" => $estoqueMinimo,
-				":estoqueAtual" => $estoqueAtual,
 				":pid" => $id
 			)
 		);
@@ -127,5 +126,8 @@ $prod->getProdutos();
 //$prod->getProdutosBy('categoria', 2);
 //$prod->getProdutoData(5);
 //$prod->addProduto("Produto 7", 1, 50, 20);
-//$prod->deleteProduto(7);
-//$prod->updateProduto(6, "Produto 6", 1, 50, 20);
+//$prod->deleteProduto(7);s
+//$prod->updateProduto(6, "Produto 6", 1, 50);
+
+//$login = new Login();
+//echo $login->check_session();

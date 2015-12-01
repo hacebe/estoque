@@ -1,5 +1,5 @@
 <?php
-include "autoload.php";
+require_once "autoload.php";
 
 use Connection as conexao;	
 
@@ -60,9 +60,9 @@ class Login{
 $user = (isset($_POST['user'])) ? $_POST['user'] : null;
 $passwd = (isset($_POST['passwd'])) ? $_POST['passwd'] : null;
 $login = new Login();
-$login->login($user, $passwd);
+//$login->login($user, $passwd);
 
 //Check if user is logged in!
 //echo $login->check_session();
 
-$login->logout();
+//$login->logout();
