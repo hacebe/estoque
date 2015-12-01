@@ -1,3 +1,2 @@
-#Connection Data
-db.php
-src/data/Connection.php
+src/Connection.php
+vendor/**

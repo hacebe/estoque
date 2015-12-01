@@ -55,11 +55,19 @@ class Categoria{
 			)
 		);
 
-		echo json_encode(
-			array(
-				"success" => 1
-			)
-		);
+		if($p_sql->rowCount() > 0){
+			echo json_encode(
+				array(
+					"success" => 1
+				)
+			);
+		}else{
+			echo json_encode(
+				array(
+					"error" => "Não foi possivel incluir"
+				)
+			);
+		}
 	}
 
 	public function updateCategoria($id, $nome){
@@ -71,11 +79,19 @@ class Categoria{
 			)
 		);
 
-		echo json_encode(
-			array(
-				"success" => 1
-			)
-		);
+		if($p_sql->rowCount() > 0){
+			echo json_encode(
+				array(
+					"success" => 1
+				)
+			);
+		}else{
+			echo json_encode(
+				array(
+					"error" => "Registro nao encontrado"
+				)
+			);
+		}
 	}
 
 	public function deleteCategoria($id){
@@ -86,17 +102,25 @@ class Categoria{
 			)
 		);
 
-		echo json_encode(
-			array(
-				"success" => 1
-			)
-		);
+		if($p_sql->rowCount() > 0){
+			echo json_encode(
+				array(
+					"success" => 1
+				)
+			);
+		}else{
+			echo json_encode(
+				array(
+					"error" => "Registro nao encontrado"
+				)
+			);
+		}
 	}
 
 }
 
-$cat = new Categoria();
-$cat->getCategorias();
+//$cat = new Categoria();
+//$cat->getCategorias();
 //$cat->getCategoriaData(1);
 //$cat->addCategoria("Categoria 7");
 //$cat->deleteCategoria(3);

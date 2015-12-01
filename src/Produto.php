@@ -79,11 +79,19 @@ class Produto{
 			)
 		);
 
-		echo json_encode(
-			array(
-				"success" => 1
-			)
-		);
+		if($p_sql->rowCount() > 0){
+			echo json_encode(
+				array(
+					"success" => 1
+				)
+			);
+		}else{
+			echo json_encode(
+				array(
+					"error" => "Não foi possivel incluir"
+				)
+			);
+		}
 	}
 
 	public function updateProduto($id, $nome, $cat, $estoqueMinimo){
@@ -97,11 +105,19 @@ class Produto{
 			)
 		);
 
-		echo json_encode(
-			array(
-				"success" => 1
-			)
-		);
+		if($p_sql->rowCount() > 0){
+			echo json_encode(
+				array(
+					"success" => 1
+				)
+			);
+		}else{
+			echo json_encode(
+				array(
+					"error" => "Registro nao encontrado"
+				)
+			);
+		}
 	}
 
 	public function deleteProduto($id){
@@ -112,17 +128,25 @@ class Produto{
 			)
 		);
 
-		echo json_encode(
-			array(
-				"success" => 1
-			)
-		);
+		if($p_sql->rowCount() > 0){
+			echo json_encode(
+				array(
+					"success" => 1
+				)
+			);
+		}else{
+			echo json_encode(
+				array(
+					"error" => "Registro nao encontrado"
+				)
+			);
+		}
 	}
 
 }
 
-$prod = new Produto();
-$prod->getProdutos();
+//$prod = new Produto();
+//$prod->getProdutos();
 //$prod->getProdutosBy('categoria', 2);
 //$prod->getProdutoData(5);
 //$prod->addProduto("Produto 7", 1, 50, 20);

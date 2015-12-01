@@ -60,7 +60,7 @@ class Login{
 $user = (isset($_POST['user'])) ? $_POST['user'] : null;
 $passwd = (isset($_POST['passwd'])) ? $_POST['passwd'] : null;
 $login = new Login();
-//$login->login($user, $passwd);
+$login->login($user, $passwd);
 
 //Check if user is logged in!
 //echo $login->check_session();
