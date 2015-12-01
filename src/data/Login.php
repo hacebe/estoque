@@ -4,31 +4,65 @@ include "autoload.php";
 use Connection as conexao;	
 
 class Login{
-	public $uid;
-	public $nome;
+	private $uid;
+	private $nome;
 
-	function __construct($user, $pass){
+	function __construct(){
+
+	}
+
+	public function login($user,$pass){
 		$this->db = conexao::getInstance();
-		$p_sql = conexao::getInstance()->prepare("SELECT uid, nome FROM est_usuarios WHERE `usuario` = '$user' and `senha` = '" . md5($pass) . "'");
-		$p_sql->execute();
+		$p_sql = conexao::getInstance()->prepare("SELECT uid, nome, senha FROM est_usuarios WHERE `usuario` = :user");
+		$p_sql->execute(
+			array(
+				':user'=>$user
+			)
+		);
 
-		$result = $p_sql->fetchAll(PDO::FETCH_ASSOC);
+		$row = $p_sql->fetchAll(PDO::FETCH_ASSOC);
 		
-		if(sizeof($result)){
-			$this->uid = $result[0]['uid'];
-			$this->nome = $result[0]['nome'];
+		if($p_sql->rowCount()){
+			if(md5($pass) == $row[0]['senha']){
+				$this->uid = $row[0]['uid'];
+				$this->nome = $row[0]['nome'];
 
-			echo json_encode(array(
-				"success" => 1,
-				"data" => $result
-			));
+				$_SESSION['user_session'] = $this->uid;
+
+				echo json_encode(array(
+					"success" => 1,
+					"data" => $row
+				));
+			}else{
+				echo json_encode(array(
+					"success" => 0,
+					"error" => "Senha incorreta!"
+				));
+			}
 		}else{
 			echo json_encode(array(
 				"success" => 0,
-				"error" => "Usuario e/ou senha incorretos(as)"
+				"error" => "Usuario inexistente!"
 			));
 		}
 	}
- }
 
-$login = new Login($_GET['user'], $_GET['passwd']);
+	public function logout(){
+		unset($_SESSION['user_session']);
+	}
+
+	public function check_session(){
+		if(isset($_SESSION['user_session'])){
+			return true;
+		}
+	}
+ }
+$user = (isset($_POST['user'])) ? $_POST['user'] : null;
+$passwd = (isset($_POST['passwd'])) ? $_POST['passwd'] : null;
+$login = new Login();
+$login->login($user, $passwd);
+
+//Check if user is logged in!
+//echo $login->check_session();
+
+$login->logout();

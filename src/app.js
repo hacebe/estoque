@@ -42,7 +42,7 @@ sub.on('click', function (e) {
 
 	$.ajax({
 		url: "src/data/Login.php",
-		method: 'GET',
+		method: 'POST',
 		data: {user: user, passwd: passwd},
 		success: function (response){	
 			response = JSON.parse(response);
