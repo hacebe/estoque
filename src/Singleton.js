@@ -94,6 +94,14 @@ var alteracoesProduto = {
 	estoque_atual: 10
 }
 
+var categoria = {
+	nome: "eletronicos"
+}
+
+var alteracoesCategoria = {
+	nome: "utilitarios"
+}
+
 Requests.cadastrar.produto(produto, {
 	success: function (response) {
 		produto.id = response.data.id;
@@ -124,7 +132,7 @@ Requests.cadastrar.categoria(categoria, {
 	}
 });
 
-Requests.alterar.categoria(categoria.id, alteracoesProduto, {
+Requests.alterar.categoria(categoria.id, alteracoesCategoria, {
 	success: function (response) {
 		console.log(response);
 	}

@@ -1,68 +1,63 @@
 <?php
-require_once "autoload.php";
 
-use Connection as conexao;	
+	require_once "autoload.php";
 
-class Login{
-	private $uid;
-	private $nome;
+	use Connection as conexao;	
 
-	function __construct(){
+	class Login {
 
-	}
+		private $uid;
+		private $nome;
 
-	public function login($user,$pass){
-		$this->db = conexao::getInstance();
-		$p_sql = conexao::getInstance()->prepare("SELECT uid, nome, senha FROM est_usuarios WHERE `usuario` = :user");
-		$p_sql->execute(
-			array(
-				':user'=>$user
-			)
-		);
+		function __construct() {}
 
-		$row = $p_sql->fetchAll(PDO::FETCH_ASSOC);
-		
-		if($p_sql->rowCount()){
-			if(md5($pass) == $row[0]['senha']){
-				$this->uid = $row[0]['uid'];
-				$this->nome = $row[0]['nome'];
+		public function login($user,$pass) {
 
-				$_SESSION['user_session'] = $this->uid;
+			$p_sql = conexao::getInstance()->prepare("SELECT uid, nome, senha FROM est_usuarios WHERE `usuario` = :user");
+			$p_sql->execute(
+				array(
+					':user' => $user
+				)
+			);
 
-				echo json_encode(array(
-					"success" => 1,
-					"data" => $row
-				));
-			}else{
-				echo json_encode(array(
-					"success" => 0,
-					"error" => "Senha incorreta!"
-				));
+			$row = $p_sql->fetchAll(PDO::FETCH_ASSOC);
+			
+			if($p_sql->rowCount()) {
+				if(md5($pass) == $row[0]['senha']) {
+
+					$this->uid = $row[0]['uid'];
+					$this->nome = $row[0]['nome'];
+
+					$_SESSION['user_session'] = $this->uid;
+
+					return json_encode(array(
+						"success" => 1,
+						"data" => $row
+					));
+
+				}
+
+				else {
+
+					return $app["Responses"][2];
+				}
 			}
-		}else{
-			echo json_encode(array(
-				"success" => 0,
-				"error" => "Usuario inexistente!"
-			));
+
+			else {
+
+				return echo $app["Responses"][3];
+			}
+		}
+
+		public function logout() {
+
+			unset($_SESSION['user_session']);
+		}
+
+		public function check_session() {
+
+			if(isset($_SESSION['user_session'])) {
+				return true;
+			}
 		}
 	}
-
-	public function logout(){
-		unset($_SESSION['user_session']);
-	}
-
-	public function check_session(){
-		if(isset($_SESSION['user_session'])){
-			return true;
-		}
-	}
- }
-$user = (isset($_POST['user'])) ? $_POST['user'] : null;
-$passwd = (isset($_POST['passwd'])) ? $_POST['passwd'] : null;
-$login = new Login();
-$login->login($user, $passwd);
-
-//Check if user is logged in!
-//echo $login->check_session();
-
-//$login->logout();
