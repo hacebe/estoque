@@ -2,8 +2,8 @@
 
 	$app["Responses"] = [
 		0 => json_encode([
-				"error" => true,
-				"message" => "Unknown API route",
+				"error" => 1,
+				"message" => "Rota nao encontrada",
 				"status" => "REQUEST_DENIED"
 			]),
 
@@ -11,10 +11,5 @@
 				"error" => 1,
 				"message" => "Registro nao encontrado",
 				"status" => "UNKNOWN_RECORD"
-			]),
-
-		2 => json_encode([
-				"error" => "Registro nao encontrado",
-				"status" => ""
 			])
 	];

@@ -19,8 +19,7 @@
 
 	$app->post('/deletar/produto/{id}', function ($id) {
 		$prod = new Produto();
-		$prod->deleteProduto($id);
-		return "";
+		return $prod->deleteProduto($id);
 	});
 
 	$app->post('/alterar/produto/{id}', function (Request $req, $id) use ($app) {
@@ -29,6 +28,5 @@
 		$est_minimo	= $req->get('estoque_minimo');
 
 		$prod = new Produto();
-		$prod->updateProduto($id, $nome, $categoria, $est_minimo);
-		return "";
+		return $prod->updateProduto($id, $nome, $categoria, $est_minimo);
 	});
