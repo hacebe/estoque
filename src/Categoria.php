@@ -13,6 +13,8 @@
 
 		public function getCategorias() {
 
+			global $app;
+
 			$p_sql = conexao::getInstance()->prepare('SELECT * FROM est_categorias');
 			$p_sql->execute();
 
@@ -52,6 +54,8 @@
 
 		public function addCategoria($nome) {
 
+			global $app;
+
 			$p_sql = conexao::getInstance()->prepare('INSERT INTO est_categorias (`nome`) VALUES (:nome)');
 			$p_sql->execute(array(
 					":nome" => $nome
@@ -71,6 +75,8 @@
 
 		public function updateCategoria($id, $nome) {
 
+			global $app;
+
 			$p_sql = conexao::getInstance()->prepare('UPDATE est_categorias SET `nome`=:nome WHERE cid=:cid');
 			$p_sql->execute(
 				array(
@@ -83,7 +89,7 @@
 
 				return json_encode(
 					array(
-						"success" => 1
+						"error" => 0
 					)
 				);
 			}
@@ -96,6 +102,8 @@
 
 		public function deleteCategoria($id) {
 
+			global $app;
+
 			$p_sql = conexao::getInstance()->prepare('DELETE FROM est_categorias WHERE cid = :cid');
 			$p_sql->execute(
 				array(
@@ -107,7 +115,7 @@
 
 				return json_encode(
 					array(
-						"success" => 1
+						"error" => 0
 					)
 				);
 			} 

@@ -34,6 +34,18 @@
 		5 => json_encode([
 				"error" => 1,
 				"message" => "Não foi possivel cadastrar esta categoria",
-				"status" => "MISSING_ROWS"
+				"status" => "INSERT_FAILURE"
 			]),
+
+		6 => json_encode([
+				"error" => 1,
+				"message" => "Requisicao nao autenticada",
+				"status" => "AUTH_FAILURE"
+			]),
+
+		7 => json_encode([
+				"error" => 1,
+				"message" => "Nao foi possivel incluir este produto",
+				"status" => "INSERT_FAILURE"
+			])
 	];

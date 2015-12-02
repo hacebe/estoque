@@ -1,6 +1,6 @@
 <?php
 
-	$app->get('/listar/produtos', function () {
+	$app->post('/listar/produtos', function () {
 		$prod = new Produto();
 
 		return $prod->getProdutos();

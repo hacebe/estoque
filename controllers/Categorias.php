@@ -1,6 +1,6 @@
 <?php
 
-	$app->get('/listar/categorias', function () {
+	$app->post('/listar/categorias', function () {
 
 		$cate = new Categoria();
 		return $cate->getCategorias();
