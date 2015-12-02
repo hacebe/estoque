@@ -18,8 +18,8 @@
 
 		public function getProdutos() {
 
-			$login = new Login();
-			if($login->check_session()){
+			
+			
 				$p_sql = conexao::getInstance()->prepare('SELECT p.*, c.nome as categoria_name FROM est_produtos as p LEFT JOIN est_categorias as c ON cid = categoria');
 				$p_sql->execute();
 
@@ -34,14 +34,7 @@
 						)
 					);
 				}
-			}else{
-				return json_encode(
-						array(
-							"success" => 0,
-							"error" => "Not logged in"
-						)
-					);
-			}
+			
 
 		}
 
@@ -55,7 +48,6 @@
 			);
 
 			$row = $p_sql->fetch(PDO::FETCH_ASSOC);
-
 			
 			return json_encode(
 				array(
@@ -87,6 +79,8 @@
 
 		public function addProduto($nome, $cat, $estoqueMinimo, $estoqueAtual) {
 
+			global $app;
+
 			$p_sql = conexao::getInstance()->prepare('INSERT INTO est_produtos (`nome`, `categoria`, `estoque_minimo`, `estoque_atual`) VALUES (:nome, :cat, :estoqueMinimo, :estoqueAtual)');
 			$p_sql->execute(
 				array(
@@ -108,15 +102,13 @@
 
 			else {
 
-				return json_encode(
-					array(
-						"error" => "Não foi possivel incluir"
-					)
-				);
+				return $app["Responses"][7];
 			}
 		}
 
 		public function updateProduto($id, $nome, $cat, $estoqueMinimo) {
+
+			global $app;
 
 			$p_sql = conexao::getInstance()->prepare('UPDATE est_produtos SET `nome`=:nome, `categoria`=:cat, `estoque_minimo`=:estoqueMinimo WHERE pid=:pid');
 			$p_sql->execute(
@@ -144,6 +136,8 @@
 		}
 
 		public function deleteProduto($id) {
+
+			global $app;
 
 			$p_sql = conexao::getInstance()->prepare('DELETE FROM est_produtos WHERE pid = :pid');
 			$p_sql->execute(

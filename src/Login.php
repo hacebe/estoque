@@ -1,64 +1,62 @@
 <?php
 
-require_once "autoload.php";
+	require_once "autoload.php";
 
-use Connection as conexao;
+	use Connection as conexao;	
 
-class Login{
-	private $uid;
-	private $nome;
+	final class Login {
 
-	function __construct(){
 
-	}
 
-	public function login($user,$pass){
-		$p_sql = conexao::getInstance()->prepare("SELECT uid, nome, senha FROM est_usuarios WHERE `usuario` = :user");
-		$p_sql->execute(
-			array(
-				':user'=>$user
-			)
-		);
+		public static function submit($user,$pass) {
 
-		$row = $p_sql->fetchAll(PDO::FETCH_ASSOC);
-		
-		if($p_sql->rowCount()){
-			if($pass == $row[0]['senha']){
-				$this->uid = $row[0]['uid'];
-				$this->nome = $row[0]['nome'];
-				$row[0]['senha'] = null;
-				unset($row[0]['senha']);
+			$p_sql = conexao::getInstance()->prepare("SELECT uid, nome, senha FROM est_usuarios WHERE `usuario` = :user");
+			$p_sql->execute(
+				array(
+					':user' => $user
+				)
+			);
 
-				$_SESSION['user_session'] = $this->uid;
-				$hash = $this->createSessionHash($user);
-				setcookie('sess_key', $hash);
+			$row = $p_sql->fetchAll(PDO::FETCH_ASSOC);
+			
+			if($p_sql->rowCount()) {
+				if($pass == $row[0]['senha']) {
 
-				echo json_encode(array(
-					"success" => 1,
-					"data" => $row,
-					"hash" => $hash
-				));
-			}else{
-				echo json_encode(array(
-					"success" => 0,
-					"error" => "Senha incorreta!"
-				));
+					$row = $row[0];
+
+					unset($row['senha']);
+
+					$_SESSION['user_session'] = $row['uid'];
+					$key = self::createSessionHash($user);
+					$row['key'] = $key;
+
+
+					return json_encode(array(
+						"error" => 0,
+						"data" => $row
+					));
+
+				}
+
+				else {
+
+					return $app["Responses"][2];
+				}
 			}
-		}else{
-			echo json_encode(array(
-				"success" => 0,
-				"error" => "Usuario inexistente!"
-			));
-		}
-	}
 
-	private function createSessionHash($user){
+			else {
+
+				return $app["Responses"][3];
+			}
+		}
+
+	public static function createSessionHash($user){
 		$key = md5($user . ":" . time());
 
 		$expiry = time() + 300;
 
 		try{
-			$p_sql = conexao::getInstance()->prepare("INSERT INTO est_session_keys VALUES (null, :key, :expiry)");
+			$p_sql = conexao::getInstance()->prepare("INSERT INTO est_session_keys VALUES (null, 'usuario', :key, :expiry)");
 			$p_sql->execute(
 				array(
 					':key'=>$key,
@@ -73,14 +71,11 @@ class Login{
 
 	}
 
-	public function logout(){
+	public static function logout(){
 		unset($_SESSION['user_session']);
 	}
 
-	public function check_session(){
-		$cookie = (isset($_COOKIE['sess_key'])) ? $_COOKIE['sess_key'] : null;
-
-		if(!$cookie) return false;
+	public static function check_session($key){
 
 		$now = time();
 
@@ -88,7 +83,7 @@ class Login{
 			$p_sql = conexao::getInstance()->prepare("SELECT * FROM est_session_keys WHERE `key` = :key and expiry > :now");
 			$stmt = $p_sql->execute(
 				array(
-					':key'=>$cookie,
+					':key'=>$key,
 					':now'=>$now
 				)
 			);
@@ -97,10 +92,12 @@ class Login{
 		}
 
 
-		if($p_sql->rowCount()){
+		if($p_sql->rowCount()) {
+
 			$row = $p_sql->fetch(PDO::FETCH_ASSOC);
-			$expiry = $row['expiry'] + 300; 
-			try{
+			$expiry = $now + 300; 
+			try {
+
 				$p_sql = conexao::getInstance()->prepare("UPDATE est_session_keys SET `expiry` = :expiry WHERE `key` = :key");
 				$stmt = $p_sql->execute(
 					array(
@@ -108,9 +105,13 @@ class Login{
 						':key'=>$key
 					)
 				);
-			}catch(PDOException $e){
+			}
+
+			catch(PDOException $e) {
+
 				echo $e->getMessage();
 			}
+
 			return true;
 		}else{
 			return false;
@@ -118,12 +119,3 @@ class Login{
 		
 	}
  }
-/*$user = (isset($_POST['user'])) ? $_POST['user'] : null;
-$passwd = (isset($_POST['passwd'])) ? $_POST['passwd'] : null;
-$login = new Login();
-$login->login($user, $passwd);*/
-
-//Check if user is logged in!
-//echo $login->check_session();
-
-//$login->logout();

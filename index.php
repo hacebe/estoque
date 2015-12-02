@@ -8,12 +8,13 @@
 	use Symfony\Component\HttpKernel\Exception\HttpException;
 	use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+	$app = new Silex\Application();
+
 	require_once "src/Connection.php";
 	require_once "src/Login.php";
+	require_once "responses/Responses.php";
 	require_once "src/Produto.php";
 	require_once "src/Categoria.php";
-
-	$app = new Silex\Application();
 
 	$app['debug'] = true;
 
@@ -23,25 +24,29 @@
 	    $response->headers->set('Access-Control-Allow-Origin', '*');
 	});
 
-	$app->before(function (Request $request, $app) {
 
-		$currentRoute = $app['request']->getRequestUri();
-		if($currentRoute != "/" && $currentRoute != "/login"){
-		    if (!$request->get('__token')) {
-		        //return $app['Responses'][2];
-		        $app->abort(201, "Not authenticated");
-		    }
+	$app->before(function (Request $req, $app) {
+
+		$currentRoute = $app["request"]->getRequestUri();
+
+		if($currentRoute != "/" && $currentRoute != "/login") {
+			if(!$req->get("key") || !Login::check_session($req->get("key"))) {
+				$app->abort(401, "");
+			}
 		}
 	});
-	
+
 	$app->error(function (\Exception $e) use ($app) {
+
+	    $code = ($e instanceof HttpException) ? $e->getStatusCode() : 500;
 
 		if ($e instanceof NotFoundHttpException)
 			return $app["Responses"][0];
 
-		
 
-	    $code = ($e instanceof HttpException) ? $e->getStatusCode() : 500;
+		if(isset($code) && $code == 401)
+			return $app["Responses"][6];
+
     	return new Response('We are sorry, but something went terribly wrong.', $code);
 	});
 
@@ -50,16 +55,11 @@
 		return $app["Responses"][0];
 	});
 
-	require_once "responses/Responses.php";
-
 	$app->post('/login', function(Request $req){
 		$user = $req->get('user');
 		$pass = $req->get('pass');
 
-		$login = new Login();
-		$login->login($user, $pass);
-
-		return "";
+		return Login::submit($user, $pass);
 	});
 
 	require_once "controllers/Produtos.php";
