@@ -1,7 +1,9 @@
 <?php
 
-	$app->get('/listar/produtos', function () {
+	$app->post('/listar/produtos', function () {
 		$prod = new Produto();
+		//$token = $app->get('_token');
+
 
 		return $prod->getProdutos();
 	});

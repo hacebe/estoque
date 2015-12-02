@@ -1,6 +1,6 @@
 <?php
 
-	include "autoload.php";
+	require_once "autoload.php";
 
 	use Connection as conexao;
 
@@ -18,20 +18,31 @@
 
 		public function getProdutos() {
 
-			$p_sql = conexao::getInstance()->prepare('SELECT p.*, c.nome as categoria_name FROM est_produtos as p LEFT JOIN est_categorias as c ON cid = categoria');
-			$p_sql->execute();
+			$login = new Login();
+			if($login->check_session()){
+				$p_sql = conexao::getInstance()->prepare('SELECT p.*, c.nome as categoria_name FROM est_produtos as p LEFT JOIN est_categorias as c ON cid = categoria');
+				$p_sql->execute();
 
-			$rows = $p_sql->fetchAll(PDO::FETCH_ASSOC);
+				$rows = $p_sql->fetchAll(PDO::FETCH_ASSOC);
 
-			if($p_sql->rowCount()) {
+				if($p_sql->rowCount()) {
 
+					return json_encode(
+						array(
+							"success" => 1,
+							"data" => $rows
+						)
+					);
+				}
+			}else{
 				return json_encode(
-					array(
-						"success" => 1,
-						"data" => $rows
-					)
-				);
+						array(
+							"success" => 0,
+							"error" => "Not logged in"
+						)
+					);
 			}
+
 		}
 
 		public function getProdutoData($id) {

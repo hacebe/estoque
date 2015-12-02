@@ -1,7 +1,8 @@
 <?php
+
 require_once "autoload.php";
 
-use Connection as conexao;	
+use Connection as conexao;
 
 class Login{
 	private $uid;
@@ -12,7 +13,6 @@ class Login{
 	}
 
 	public function login($user,$pass){
-		$this->db = conexao::getInstance();
 		$p_sql = conexao::getInstance()->prepare("SELECT uid, nome, senha FROM est_usuarios WHERE `usuario` = :user");
 		$p_sql->execute(
 			array(
@@ -23,15 +23,20 @@ class Login{
 		$row = $p_sql->fetchAll(PDO::FETCH_ASSOC);
 		
 		if($p_sql->rowCount()){
-			if(md5($pass) == $row[0]['senha']){
+			if($pass == $row[0]['senha']){
 				$this->uid = $row[0]['uid'];
 				$this->nome = $row[0]['nome'];
+				$row[0]['senha'] = null;
+				unset($row[0]['senha']);
 
 				$_SESSION['user_session'] = $this->uid;
+				$hash = $this->createSessionHash($user);
+				setcookie('sess_key', $hash);
 
 				echo json_encode(array(
 					"success" => 1,
-					"data" => $row
+					"data" => $row,
+					"hash" => $hash
 				));
 			}else{
 				echo json_encode(array(
@@ -47,20 +52,76 @@ class Login{
 		}
 	}
 
+	private function createSessionHash($user){
+		$key = md5($user . ":" . time());
+
+		$expiry = time() + 300;
+
+		try{
+			$p_sql = conexao::getInstance()->prepare("INSERT INTO est_session_keys VALUES (null, :key, :expiry)");
+			$p_sql->execute(
+				array(
+					':key'=>$key,
+					':expiry'=>$expiry
+				)
+			);
+
+			return $key;
+		}catch(PDOException $e){
+			return $e->getMessage();			
+		}
+
+	}
+
 	public function logout(){
 		unset($_SESSION['user_session']);
 	}
 
 	public function check_session(){
-		if(isset($_SESSION['user_session'])){
-			return true;
+		$cookie = (isset($_COOKIE['sess_key'])) ? $_COOKIE['sess_key'] : null;
+
+		if(!$cookie) return false;
+
+		$now = time();
+
+		try{
+			$p_sql = conexao::getInstance()->prepare("SELECT * FROM est_session_keys WHERE `key` = :key and expiry > :now");
+			$stmt = $p_sql->execute(
+				array(
+					':key'=>$cookie,
+					':now'=>$now
+				)
+			);
+		}catch(PDOException $e){
+			echo $e->getMessage();
 		}
+
+
+		if($p_sql->rowCount()){
+			$row = $p_sql->fetch(PDO::FETCH_ASSOC);
+			$expiry = $row['expiry'] + 300; 
+			try{
+				$p_sql = conexao::getInstance()->prepare("UPDATE est_session_keys SET `expiry` = :expiry WHERE `key` = :key");
+				$stmt = $p_sql->execute(
+					array(
+						':expiry'=>$expiry,
+						':key'=>$key
+					)
+				);
+			}catch(PDOException $e){
+				echo $e->getMessage();
+			}
+			return true;
+		}else{
+			return false;
+		}
+		
 	}
  }
-$user = (isset($_POST['user'])) ? $_POST['user'] : null;
+/*$user = (isset($_POST['user'])) ? $_POST['user'] : null;
 $passwd = (isset($_POST['passwd'])) ? $_POST['passwd'] : null;
 $login = new Login();
-$login->login($user, $passwd);
+$login->login($user, $passwd);*/
 
 //Check if user is logged in!
 //echo $login->check_session();
