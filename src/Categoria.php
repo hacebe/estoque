@@ -3,7 +3,8 @@ require_once "autoload.php";
 
 use Connection as conexao;	
 
-class Categoria{
+class Categoria {
+
 	private $cid;
 	private $nome;
 	private $db;

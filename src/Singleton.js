@@ -25,7 +25,7 @@ var req = function (method, url, params, callbacks) {
 	callbacks.onSuccess = callbacks.success || function () {};
 	callbacks.onFailure = callbacks.failure || function () {};
 
-	var host = "http://192.168.0.32/api/index.php";
+	var host = "http://localhost/api/index.php";
 
 	$.ajax({
 		url: host + url,
@@ -118,8 +118,28 @@ Requests.listar.produtos({
 	}
 });
 
+Requests.cadastrar.categoria(categoria, {
+	success: function (response) {
+		categoria.id = response.data.id;
+	}
+});
+
+Requests.alterar.categoria(categoria.id, alteracoesProduto, {
+	success: function (response) {
+		console.log(response);
+	}
+});
+
+Requests.deletar.categoria(categoria.id, {
+	success: function (response) {
+		console.log(response);
+	}
+});
+
 Requests.listar.categorias({
 	success: function (response) {
 		console.log(response);
 	}
-});*/
+});
+
+*/

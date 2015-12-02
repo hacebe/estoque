@@ -3,7 +3,8 @@ require_once "autoload.php";
 
 use Connection as conexao;	
 
-class MovimentacaoEstoque{
+class MovimentacaoEstoque {
+
 	private $mid;
 	private $nome;
 	private $db;
@@ -94,12 +95,3 @@ class MovimentacaoEstoque{
 	}
 
 }
-
-$cat = new Categoria();
-$cat->getCategorias();
-//$cat->getCategoriaData(1);
-//$cat->addCategoria("Categoria 7");
-//$cat->deleteCategoria(3);
-//$cat->updateCategoria(2, "Categoria 2");
-$login = new Login();
-echo $login->check_session();
