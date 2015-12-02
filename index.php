@@ -21,12 +21,10 @@
 
 	$app->get('/', function () use ($app) {
 
-		return $app->json([
-			"error" => true,
-			"message" => "Unknown API route",
-			"status" => "REQUEST_DENIED"
-		]);
+		return $app["Responses"][0];
 	});
+
+	require_once "responses/Responses.php";
 
 	require_once "controllers/Produtos.php";
 	require_once "controllers/Categorias.php";

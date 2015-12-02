@@ -128,11 +128,7 @@
 
 			else {
 
-				return json_encode(
-					array(
-						"error" => "Registro nao encontrado"
-					)
-				);
+				return $app["Responses"][1];
 			}
 		}
 
@@ -156,11 +152,7 @@
 
 			else {
 
-				return json_encode(
-					array(
-						"error" => "Registro nao encontrado"
-					)
-				);
+				return $app["Responses"][1];
 			}
 		}
 	}
